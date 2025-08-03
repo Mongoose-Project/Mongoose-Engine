@@ -1,8 +1,15 @@
 services:
-  builder:
+  format:
+    image: mongoose-builder
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Docker/Dockerfile
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: Docker/Scripts/format.sh
+  builder:
+    image: mongoose-builder
     volumes:
       - .:/workspace
     working_dir: /workspace

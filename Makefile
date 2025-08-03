@@ -6,14 +6,14 @@ EXECUTABLE_NAME = mongoose
 EXECUTABLE = ./build/$(EXECUTABLE_NAME).exe
 SRC_DIR = src
 BUILD_DIR = build
-IMAGE_NAME = mongoose-builder
 SERVICE_NAME = builder
+FORMAT_SERVICE_NAME = format
 
 C_SOURCES := $(wildcard $(SRC_DIR)/*.c)
 HEADERS := $(wildcard $(SRC_DIR)/*.h)
 
 # === Targets ===
-.PHONY: help build run clean clean-all docker-build docker-up docker-down docker-prune docker-rebuild docker-shell
+.PHONY: help build run format clean clean-all docker-build docker-up docker-down docker-prune docker-rebuild docker-shell
 
 # === Help Menu ===
 help:
@@ -21,6 +21,7 @@ help:
 	@echo ""
 	@echo "Common targets:"
 	@echo "  build             Compile using Docker Compose (only if sources changed)"
+	@echo "  Format 		   Format the c files using clang format"
 	@echo "  run               Run the compiled binary (auto builds if missing)"
 	@echo "  clean             Remove built executable"
 	@echo "  clean-all         Remove the entire build folder"
@@ -55,9 +56,15 @@ docker-shell:
 
 # === Build (Rebuilds if src changes) ===
 $(EXECUTABLE): $(C_SOURCES) $(HEADERS)
+	docker compose up $(FORMAT_SERVICE_NAME)
 	docker compose up $(SERVICE_NAME)
-
+	
 build: $(EXECUTABLE)
+
+# === Format the source code files ===
+format: 
+	@echo "Formatting using clang-format..."
+	@docker compose up $(FORMAT_SERVICE_NAME)
 
 # === Run the Executable ===
 run: $(EXECUTABLE)

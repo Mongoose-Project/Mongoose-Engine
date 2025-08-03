@@ -5,6 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install required tools
 RUN apt-get update && apt-get install -y \
     clang \
+    clang-format \
     cmake \
     ninja-build \
     mingw-w64 \
